@@ -191,7 +191,8 @@ class SplunkHecHandler(logging.Handler):
         data = json.dumps(event, sort_keys=True)
 
         try:
-            req = self.r.post(self.url, data=data, timeout=self.TIMEOUT)
+            # https://stackoverflow.com/a/15511852/999943 , fixes "Remote end closed connection without response" issues
+            req = self.r.post(self.url, data=data, timeout=self.TIMEOUT, headers={'Connection':'close'})
 
             req.raise_for_status()
         except requests.exceptions.HTTPError as err:
